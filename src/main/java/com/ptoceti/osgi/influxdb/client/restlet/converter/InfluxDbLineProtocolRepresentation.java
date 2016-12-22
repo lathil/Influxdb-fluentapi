@@ -1,4 +1,4 @@
-package com.ptoceti.osgi.influxdb.impl.client.restlet.converter;
+package com.ptoceti.osgi.influxdb.client.restlet.converter;
 
 import java.io.IOException;
 import java.io.Writer;

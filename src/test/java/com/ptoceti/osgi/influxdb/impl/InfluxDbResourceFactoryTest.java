@@ -31,12 +31,12 @@ import com.ptoceti.osgi.influxdb.Result;
 import com.ptoceti.osgi.influxdb.RetentionPolicySerie;
 import com.ptoceti.osgi.influxdb.Serie;
 import com.ptoceti.osgi.influxdb.SerieWrapper;
+import com.ptoceti.osgi.influxdb.client.exception.InfluxDbApiBadrequestException;
+import com.ptoceti.osgi.influxdb.client.exception.InfluxDbApiNotFoundException;
+import com.ptoceti.osgi.influxdb.client.resources.PingResource;
+import com.ptoceti.osgi.influxdb.client.resources.QueryResource;
+import com.ptoceti.osgi.influxdb.client.resources.WriteResource;
 import com.ptoceti.osgi.influxdb.converter.LineProtocol;
-import com.ptoceti.osgi.influxdb.impl.client.restlet.exception.InfluxDbApiBadrequestException;
-import com.ptoceti.osgi.influxdb.impl.client.restlet.exception.InfluxDbApiNotFoundException;
-import com.ptoceti.osgi.influxdb.impl.client.restlet.resources.PingResource;
-import com.ptoceti.osgi.influxdb.impl.client.restlet.resources.QueryResource;
-import com.ptoceti.osgi.influxdb.impl.client.restlet.resources.WriteResource;
 import com.ptoceti.osgi.influxdb.impl.factory.restlet.InfluxDbFactoryBuilder;
 import com.ptoceti.osgi.influxdb.impl.factory.restlet.InfluxDbResourceFactory;
 import com.ptoceti.osgi.influxdb.ql.Privilege;
@@ -113,6 +113,7 @@ public class InfluxDbResourceFactoryTest {
 	query = QueryBuilder.Query().CreateDataBase(TESTDATABASENAME).With().Duration("1w").Replication("1")
 		.Name(TESTRETENTIONPOLICY1WNAME).getQuery();
 
+	
 	try {
 	    resource.post(query);
 	} catch (ResourceException ex) {

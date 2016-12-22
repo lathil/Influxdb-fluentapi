@@ -12,8 +12,8 @@ import org.restlet.resource.Resource;
 
 import com.ptoceti.osgi.influxdb.Batch;
 import com.ptoceti.osgi.influxdb.Point;
-import com.ptoceti.osgi.influxdb.impl.client.restlet.converter.InfluxDbLineProtocolRepresentation;
-import com.ptoceti.osgi.influxdb.impl.client.restlet.converter.InfluxDbUrlEncodedRepresentation;
+import com.ptoceti.osgi.influxdb.client.restlet.converter.InfluxDbLineProtocolRepresentation;
+import com.ptoceti.osgi.influxdb.client.restlet.converter.InfluxDbUrlEncodedRepresentation;
 import com.ptoceti.osgi.influxdb.ql.Query;
 
 public class InfluxDbConverter extends ConverterHelper {

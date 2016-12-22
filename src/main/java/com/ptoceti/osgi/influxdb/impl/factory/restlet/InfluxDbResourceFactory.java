@@ -7,9 +7,12 @@ import org.restlet.Context;
 import org.restlet.engine.Engine;
 import org.restlet.resource.ClientResource;
 
-import com.ptoceti.osgi.influxdb.impl.client.restlet.resources.PingResource;
-import com.ptoceti.osgi.influxdb.impl.client.restlet.resources.QueryResource;
-import com.ptoceti.osgi.influxdb.impl.client.restlet.resources.WriteResource;
+import com.ptoceti.osgi.influxdb.client.resources.PingResource;
+import com.ptoceti.osgi.influxdb.client.resources.QueryResource;
+import com.ptoceti.osgi.influxdb.client.resources.WriteResource;
+import com.ptoceti.osgi.influxdb.client.restlet.resource.RestletPingResource;
+import com.ptoceti.osgi.influxdb.client.restlet.resource.RestletQueryResource;
+import com.ptoceti.osgi.influxdb.client.restlet.resource.RestletWriteResource;
 import com.ptoceti.osgi.influxdb.impl.converter.InfluxDbConverter;
 import com.ptoceti.osgi.influxdb.ql.Query;
 
@@ -100,7 +103,7 @@ public class InfluxDbResourceFactory {
 
 	clientResource.addSegment(WriteResource.path);
 
-	WriteResource wResource = clientResource.wrap(WriteResource.class);
+	RestletWriteResource wResource = new RestletWriteResource(clientResource);
 	return wResource;
 
     }
@@ -129,7 +132,7 @@ public class InfluxDbResourceFactory {
 
 	ClientResource clientResource = new ClientResource(target.toExternalForm());
 	clientResource.addSegment(QueryResource.path);
-	QueryResource qResource = clientResource.wrap(QueryResource.class);
+	RestletQueryResource qResource = new RestletQueryResource(clientResource);
 
 	return qResource;
 
@@ -156,7 +159,8 @@ public class InfluxDbResourceFactory {
 	clientResource.addQueryParameter(WRITEDBNAMEPARAM, getDbName());
 	
 	clientResource.addQueryParameter(QUERYPARAMNAME, query.toQL());
-	QueryResource qResource = clientResource.wrap(QueryResource.class);
+	
+	RestletQueryResource qResource = new RestletQueryResource(clientResource);
 
 	return qResource;
 
@@ -167,10 +171,8 @@ public class InfluxDbResourceFactory {
 	ClientResource clientResource = new ClientResource(target.toExternalForm());
 	clientResource.addSegment(PingResource.path);
 
-	PingResource pResource = clientResource.wrap(PingResource.class);
-
+	RestletPingResource pResource = new RestletPingResource(clientResource);
 	return pResource;
-
     }
 
     public String getDbName() {

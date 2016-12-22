@@ -1,4 +1,4 @@
-package com.ptoceti.osgi.influxdb.impl.client.restlet.exception;
+package com.ptoceti.osgi.influxdb.client.exception;
 
 import java.util.List;
 
@@ -6,7 +6,6 @@ import org.restlet.resource.Status;
 
 import com.ptoceti.osgi.influxdb.Result;
 
-@Status(value = 400, serialize = true)
 public class InfluxDbApiBadrequestException  extends RuntimeException{
 
     /**

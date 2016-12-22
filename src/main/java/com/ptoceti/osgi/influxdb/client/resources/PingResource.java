@@ -1,4 +1,4 @@
-package com.ptoceti.osgi.influxdb.impl.client.restlet.resources;
+package com.ptoceti.osgi.influxdb.client.resources;
 
 import org.restlet.resource.Get;
 import org.restlet.resource.ResourceException;
@@ -8,6 +8,5 @@ public interface PingResource {
 
     static String  path = "ping";
     
-    @Get
     public void ping();
 }
