@@ -4,7 +4,7 @@ public class QueryResultsHelper {
 
     public static Serie getSerie(String name, Result result) {
 
-	if (result != null && result.getSeries().size() > 0) {
+	if (result != null && result.getSeries() != null && result.getSeries().size() > 0) {
 	    for (Serie serie : result.getSeries()) {
 		if (serie.getName().equals(name)) {
 		    return serie;
@@ -18,7 +18,7 @@ public class QueryResultsHelper {
 
     public static Serie getSerie(int index, Result result) {
 
-	if (result != null && result.getSeries().size() > 0) {
+	if (result != null && result.getSeries() != null && result.getSeries().size() > 0) {
 	    return result.getSeries().get(index);
 	}
 

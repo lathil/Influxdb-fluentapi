@@ -45,7 +45,7 @@ public class RetentionPolicySerie extends SerieWrapper implements Iterator<Reten
 	private Integer replicaN;
 	private Boolean isdefault;
 	
-	public RetentionPolicy(List<Object> values) {
+	public RetentionPolicy(List<String> values) {
 
 	    setName( (String)values.get(fields.get(NAMEFIELD)));
 	    setDuration( (String)values.get(fields.get(DURATIONFIELD)));

@@ -8,7 +8,7 @@ public class Serie {
     private String name;
     private List<String> columns;
     private Map<String, String> tags;
-    private List<List<Object>> values;
+    private List<List<String>> values;
     
     public String getName() {
 	return name;
@@ -26,11 +26,11 @@ public class Serie {
 	this.columns = columns;
     }
     
-    public List<List<Object>> getValues() {
+    public List<List<String>> getValues() {
 	return values;
     }
     
-    public void setValues(List<List<Object>> values) {
+    public void setValues(List<List<String>> values) {
 	this.values = values;
     }
 

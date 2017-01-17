@@ -36,7 +36,7 @@ public class UserSerie extends SerieWrapper implements Iterator<UserSerie.User>,
     
     public class User {
 	
-	User(List<Object> values){
+	User(List<String> values){
 	    setUser( (String)values.get(fields.get(USERFIELD)));
 	    setAdmin( Boolean.valueOf((String)values.get(fields.get(ADMINFIELD))));
 	}

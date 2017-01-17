@@ -41,7 +41,7 @@ public class MeasurementSerie extends SerieWrapper implements Iterator<Measureme
     public class Measurement {
 	private String name;
 
-	Measurement(List<Object> values) {
+	Measurement(List<String> values) {
 	    setName((String) values.get(fields.get(NAMEFIELD)));
 	}
 

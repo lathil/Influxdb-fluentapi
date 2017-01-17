@@ -11,16 +11,25 @@ public class Point {
     // the name of the table
     private String measurement;
     // tags are indexed, used for searching
-    private SortedMap<String, String> tags = Collections.synchronizedSortedMap(new TreeMap<String, String>());
+    private SortedMap<String, String> tags = null;
     // fields are the values
-    private SortedMap<String, Object> fields = Collections.synchronizedSortedMap(new TreeMap<String, Object>());
+    private SortedMap<String, Object> fields = null;
 
     private long timestamp;
 
     public Point(String measurement) {
+	this(measurement, 
+		Collections.synchronizedSortedMap(new TreeMap<String, String>()), 
+		Collections.synchronizedSortedMap(new TreeMap<String, Object>()));
+
+    }
+    
+    public Point(String measurement, SortedMap<String, String> tags, SortedMap<String, Object> fields){
 	this.measurement = measurement;
 	this.timestamp = (Calendar.getInstance().getTimeInMillis());
-
+	
+	this.tags = tags;
+	this.fields = fields;
     }
     
     public String getMeasurement(){

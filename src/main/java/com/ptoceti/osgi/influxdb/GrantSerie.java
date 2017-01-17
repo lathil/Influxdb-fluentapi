@@ -38,7 +38,7 @@ public class GrantSerie extends SerieWrapper implements Iterator<GrantSerie.Gran
 	private String database;
 	private String privilege;
 	
-	public Grant(List<Object> values){
+	public Grant(List<String> values){
 	    setDatabase( (String)values.get(fields.get(DATABASEFIELD)));
 	    setPrivilege( (String)values.get(fields.get(PRIVILEGEFIELD)));
 	}

@@ -43,7 +43,7 @@ public class DatabaseSerie extends SerieWrapper implements Iterator<DatabaseSeri
 	
 	private String name;
 	
-	Database(List<Object> values){
+	Database(List<String> values){
 	    setName( (String)values.get(fields.get(NAMEFIELD)));
 	}
 

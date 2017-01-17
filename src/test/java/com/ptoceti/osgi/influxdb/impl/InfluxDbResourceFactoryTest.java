@@ -8,7 +8,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -37,6 +39,7 @@ import com.ptoceti.osgi.influxdb.client.resources.PingResource;
 import com.ptoceti.osgi.influxdb.client.resources.QueryResource;
 import com.ptoceti.osgi.influxdb.client.resources.WriteResource;
 import com.ptoceti.osgi.influxdb.converter.LineProtocol;
+import com.ptoceti.osgi.influxdb.impl.NOAASerie.Noaa;
 import com.ptoceti.osgi.influxdb.impl.factory.restlet.InfluxDbFactoryBuilder;
 import com.ptoceti.osgi.influxdb.impl.factory.restlet.InfluxDbResourceFactory;
 import com.ptoceti.osgi.influxdb.ql.Privilege;
@@ -402,6 +405,8 @@ public class InfluxDbResourceFactoryTest {
 	    Assert.fail("Error injecting batch points: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error injecting batch points: " + ex.getError());
+	} catch (InfluxDbApiNotFoundException ex ){
+	    Assert.fail("Error injecting batch points: " + ex.getError());
 	}
 
     }
@@ -596,14 +601,24 @@ public class InfluxDbResourceFactoryTest {
     
     @Test
     public void test2009QuerySelectNOAADatabase(){
-	Query query = QueryBuilder.Query().Select("*").From("h2o_feet").Where("location = 'coyote_creek'").getQuery();
+	
+	long from = new GregorianCalendar(2015, 8, 0).getTime().getTime();
+	long to = new GregorianCalendar(2015, 8, 15).getTime().getTime();
+	
+	// select all records from 2025 August
+	Query query = QueryBuilder.Query().Select("*").From("test." + TESTRETENTIONPOLICY100WNAME + ".h2o_feet")
+		.Where("location = 'coyote_creek' AND time > " + from + "ms AND time < " + to + "ms").getQuery();
 	QueryResource resource = factory.getQueryResource(query);
 
 	QueryResults queryResults = null;
 
 	try {
 	    queryResults = resource.get();
-	    SerieWrapper serie = new SerieWrapper(QueryResultsHelper.getSerie(0, queryResults.getResults().get(0)));
+	    NOAASerie serie = new NOAASerie(QueryResultsHelper.getSerie(0, queryResults.getResults().get(0)));
+	    
+	    while(serie.hasNext()){
+		Noaa noaa = serie.next();
+	    }
 	    
 	    Assert.assertTrue("NOAA select <= 0", serie.size() > 0);
 	    
