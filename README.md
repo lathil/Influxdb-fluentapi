@@ -3,18 +3,18 @@ A Java client fluent api to work with InfluxDb. Compatible with InfluxDb 1.0+
 
 ## Features
 
-- Builders for composing complex InfluxDB queies: SELECT ..., SHOW, ....
+- Builders for composing complex InfluxDB queries: SELECT ..., SHOW, ....
 - Handling of converting queries and responses to and from InfluxDb format (line protocol i, Json responses)
 - Complete Handling of the three endpoint: /ping, /query and /write
 
 
 ## Examples
 
-### For use of the /query and point
+### For use of the /query endpoint
 Write a query to create a database
 
 ```Java
-Write a query = QueryBuilder.Query().CreateDataBase(TESTDATABASENAME).With().Duration("1w").Replication("1")
+Query query = QueryBuilder.Query().CreateDataBase(TESTDATABASENAME).With().Duration("1w").Replication("1")
 		.Name(TESTRETENTIONPOLICY1WNAME).getQuery();
 ```
 

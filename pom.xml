@@ -13,7 +13,7 @@
 	<inceptionYear>2016</inceptionYear>
 
 	<organization>
-		<name>ptoceti</name>
+		<name>Ptoceti</name>
 		<url>www.ptoceti.com</url>
 	</organization>
 
@@ -51,17 +51,17 @@
 		<system>github</system>
 	</issueManagement>
 
+	<developers>
+		<developer>
+			<email>lathil.dev@gmail.com</email>
+			<name>laurent thil</name>
+			<url>https://github.com/lathil</url>
+			<id>lathil</id>
+		</developer>
+	</developers>
+
 	<build>
 		<resources>
-			<resource>
-				<directory>${project.build.directory}</directory>
-				<filtering>false</filtering>
-				<includes>
-					<include>LICENSE.txt</include>
-					<include>NOTICE.txt</include>
-					<include>README.md</include>
-				</includes>
-			</resource>
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>false</filtering>
@@ -92,6 +92,7 @@
 				</configuration>
 			</plugin>
 
+			<!-- GENERATE OSGI INFO IN MANIFEST -->
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
@@ -117,6 +118,7 @@
 						<compilerVersion>1.7</compilerVersion>
 					</configuration>
 				</plugin>
+
 
 				<!-- INCLUDE SOURCE JAR -->
 				<plugin>
@@ -149,8 +151,6 @@
 					</executions>
 				</plugin>
 
-				
-
 				<!-- OSGi BUNDLE -->
 				<plugin>
 					<groupId>org.apache.felix</groupId>
@@ -170,24 +170,38 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>license-maven-plugin</artifactId>
-					<version>1.5</version>
+					<version>1.6</version>
 					<executions>
 						<execution>
-							<id>append-license-file-headers</id>
+							<id>update-project-license</id>
 							<goals>
-								<goal>check-file-header</goal>
+								<goal>update-project-license</goal>
 							</goals>
 							<phase>process-sources</phase>
 							<configuration>
-								<licenseName>apache_v2</licenseName>
-								<descriptionTemplate>${basedir}/src/license/template.ftl</descriptionTemplate>
+								<licenseName>apache_v2_template</licenseName>
+								<canUpdateLicense>true</canUpdateLicense>
+								<licenseResolver>${project.baseUri}/src/license/</licenseResolver>
+								<verbose>true</verbose>
+							</configuration>
+						</execution>
+
+						<execution>
+							<id>append-license-file-headers</id>
+							<goals>
+								<goal>update-file-header</goal>
+							</goals>
+							<phase>process-sources</phase>
+							<configuration>
+								<licenseName>apache_v2_template</licenseName>
+								<licenseResolver>${project.baseUri}/src/license/</licenseResolver>
 								<canUpdateCopyright>true</canUpdateCopyright>
-								<canUpdateDescription>true</canUpdateDescription>
+								<canUpdateDescription>false</canUpdateDescription>
 								<canUpdateLicense>true</canUpdateLicense>
 
 								<roots>
 									<root>src/main/java</root>
-									<root>src/main/test</root>
+									<root>src/test/java</root>
 								</roots>
 
 							</configuration>
@@ -216,7 +230,7 @@
 										</versionRange>
 										<goals>
 											<goal>
-												check-file-header
+												update-file-header
 											</goal>
 											<goal>
 												update-project-license
