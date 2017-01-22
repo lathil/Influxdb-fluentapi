@@ -1,0 +1,46 @@
+package com.ptoceti.influxdb;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Iterator;
+
+public class SerieWrapper {
+
+    protected Serie serie;
+    protected Map<String, Integer> fields;
+
+    protected Iterator<List<String>> delegate;
+
+    public SerieWrapper(Serie serie) {
+	this.serie = serie;
+	this.fields = new HashMap<String, Integer>();
+
+	for (int columnsindex = 0; columnsindex < serie.getColumns().size(); columnsindex++) {
+	    fields.put(serie.getColumns().get(columnsindex), columnsindex);
+	}
+
+	delegate = serie.getValues().iterator();
+
+    }
+
+    protected <T extends String> List<T> getValuesForField(String fieldName, Class<T> returnType) {
+
+	List<T> values = new ArrayList<T>();
+	Integer fieldIndex = fields.get(fieldName);
+
+	if (fieldIndex != null) {
+	    for (List<String> dbinfos : serie.getValues()) {
+		values.add(returnType.cast(dbinfos.get(fieldIndex)));
+	    }
+	}
+
+	return values;
+    }
+
+    public int size() {
+
+	return serie.getValues().size();
+    }
+}

@@ -34,7 +34,7 @@
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<pom.organization.name>Ptoceti</pom.organization.name>
 		<pom.organization.url>www.ptoceti.com</pom.organization.url>
-		<bundle.namespace>com.ptoceti.osgi.influxdb</bundle.namespace>
+		<bundle.namespace>com.ptoceti.influxdb</bundle.namespace>
 		<restlet.version>2.3.0</restlet.version>
 		<version.junit>4.11</version.junit>
 	</properties>
@@ -98,7 +98,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Export-Package>com.ptoceti.osgi.influxdb.*</Export-Package>
+						<Export-Package>com.ptoceti.influxdb,com.ptoceti.influxdb.client.exception,com.ptoceti.influxdb.client.resources,com.ptoceti.influxdb.converter,com.ptoceti.influxdb.factory,com.ptoceti.influxdb.ql</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -239,13 +239,13 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>org.restlet.osgi</groupId>
+			<groupId>org.restlet.jse</groupId>
 			<artifactId>org.restlet</artifactId>
 			<version>${restlet.version}</version>
 		</dependency>
 
 		<dependency>
-			<groupId>org.restlet.osgi</groupId>
+			<groupId>org.restlet.jse</groupId>
 			<artifactId>org.restlet.ext.jackson</artifactId>
 			<version>${restlet.version}</version>
 		</dependency>
