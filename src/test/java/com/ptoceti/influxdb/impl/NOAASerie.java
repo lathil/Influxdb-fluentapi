@@ -4,7 +4,7 @@ package com.ptoceti.influxdb.impl;
  * #%L
  * InfluxDb-FluentApi
  * %%
- * Copyright (C) 2016 - 2017 Ptoceti
+ * Copyright (C) 2016 - 2018 Ptoceti
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,8 @@ public class NOAASerie extends SerieWrapper implements Iterator<NOAASerie.Noaa>,
 
     protected static final String TIME = "time";
     
+    public TimeStampHelper timeStampHelper = new TimeStampHelper();
+    
     public class Noaa {
 
 	private Date time;
@@ -44,7 +46,7 @@ public class NOAASerie extends SerieWrapper implements Iterator<NOAASerie.Noaa>,
 	    
 	    String rf3339time = (String)values.get(fields.get(TIME));
 	    try {
-		setTime( TimeStampHelper.parseRfc3339(rf3339time));
+		setTime( timeStampHelper.parseRfc3339(rf3339time));
 	    } catch (ParseException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();

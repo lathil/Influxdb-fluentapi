@@ -4,7 +4,7 @@ package com.ptoceti.influxdb;
  * #%L
  * InfluxDb-FluentApi
  * %%
- * Copyright (C) 2016 - 2017 Ptoceti
+ * Copyright (C) 2016 - 2018 Ptoceti
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,9 +35,9 @@ import java.util.Date;
 public class TimeStampHelper {
 
     protected static final String rfc3339Pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX";
-    protected static final SimpleDateFormat  rfc3339Format = new SimpleDateFormat(rfc3339Pattern);
+    protected SimpleDateFormat  rfc3339Format = new SimpleDateFormat(rfc3339Pattern);
     
-    public static Date parseRfc3339(String dateTime) throws ParseException{
+    public Date parseRfc3339(String dateTime) throws ParseException{
 	
 	Date result = null;
 	
