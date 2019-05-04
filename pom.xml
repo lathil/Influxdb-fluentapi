@@ -2,8 +2,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.ptoceti</groupId>
-	<artifactId>influxdb-fluentapi</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<artifactId>influxdb-fluentapi-jersey</artifactId>
+	<version>1.1.0-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 
@@ -29,13 +29,13 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<maven.compiler.target>1.7</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 		<pom.organization.name>Ptoceti</pom.organization.name>
 		<pom.organization.url>www.ptoceti.com</pom.organization.url>
 		<bundle.namespace>com.ptoceti.influxdb</bundle.namespace>
-		<restlet.version>2.3.0</restlet.version>
 		<version.junit>4.11</version.junit>
+		<jersey.version>2.28</jersey.version>
 	</properties>
 
 	<scm>
@@ -127,6 +127,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.8.0</version>
 					<configuration>
 						<showDeprecation>true</showDeprecation>
 						<showWarnings>true</showWarnings>
@@ -140,6 +141,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
+					<version>3.0.1</version>
 					<configuration>
 						<includePom>true</includePom>
 					</configuration>
@@ -157,6 +159,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>3.0.1</version>
 					<executions>
 						<execution>
 							<id>attach-javadocs</id>
@@ -165,6 +168,9 @@
 							</goals>
 						</execution>
 					</executions>
+					<configuration>
+						<doclint>none</doclint>
+					</configuration>
 				</plugin>
 
 				<!-- OSGi BUNDLE -->
@@ -293,16 +299,24 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>org.restlet.jse</groupId>
-			<artifactId>org.restlet</artifactId>
-			<version>${restlet.version}</version>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>${jersey.version}</version>
 		</dependency>
 
 		<dependency>
-			<groupId>org.restlet.jse</groupId>
-			<artifactId>org.restlet.ext.jackson</artifactId>
-			<version>${restlet.version}</version>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-json-jackson</artifactId>
+			<version>${jersey.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.jersey.inject</groupId>
+			<artifactId>jersey-hk2</artifactId>
+			<version>${jersey.version}</version>
+			<scope>test</scope>
+		</dependency>
+
 
 		<dependency>
 			<groupId>junit</groupId>

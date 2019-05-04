@@ -4,7 +4,7 @@ package com.ptoceti.influxdb.factory;
  * #%L
  * InfluxDb-FluentApi
  * %%
- * Copyright (C) 2016 - 2018 Ptoceti
+ * Copyright (C) 2016 - 2019 Ptoceti
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ package com.ptoceti.influxdb.factory;
 
 import java.net.URL;
 
-import com.ptoceti.influxdb.factory.restlet.RestletInfluxDbResourceFactory;
+import com.ptoceti.influxdb.factory.jersey.JerseyInfluxDbResourceFactory;
 
 /**
  * A builder to configure a RestletInfluxDbResourceFactory in a fluent api manner.
@@ -52,7 +52,7 @@ public class InfluxDbFactoryBuilder {
      * @return a factory builder
      */
     public static InfluxDbFactoryBuilder build(URL target) {
-	RestletInfluxDbResourceFactory newFactory = new RestletInfluxDbResourceFactory(target);
+	JerseyInfluxDbResourceFactory newFactory = new JerseyInfluxDbResourceFactory(target);
 	return new InfluxDbFactoryBuilder(newFactory);
     }
 

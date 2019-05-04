@@ -4,7 +4,7 @@ package com.ptoceti.influxdb;
  * #%L
  * InfluxDb-FluentApi
  * %%
- * Copyright (C) 2016 - 2018 Ptoceti
+ * Copyright (C) 2016 - 2019 Ptoceti
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,9 @@ import java.util.List;
 
 public class Result {
 
+
+
+    private int statement_id;
     private List<Serie> series;
     private String error;
     
@@ -39,6 +42,13 @@ public class Result {
     }
     public void setError(String error) {
 	this.error = error;
+    }
+    public int getStatement_id() {
+        return statement_id;
+    }
+
+    public void setStatement_id(int statement_id) {
+        this.statement_id = statement_id;
     }
     
     

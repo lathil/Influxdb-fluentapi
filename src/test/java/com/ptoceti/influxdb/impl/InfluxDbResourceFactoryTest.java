@@ -4,7 +4,7 @@ package com.ptoceti.influxdb.impl;
  * #%L
  * InfluxDb-FluentApi
  * %%
- * Copyright (C) 2016 - 2018 Ptoceti
+ * Copyright (C) 2016 - 2019 Ptoceti
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,11 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.spi.CalendarDataProvider;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -39,7 +41,6 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.Assert;
 import org.junit.runners.MethodSorters;
-import org.restlet.resource.ResourceException;
 
 import com.ptoceti.influxdb.Batch;
 import com.ptoceti.influxdb.BatchBuilder;
@@ -62,7 +63,6 @@ import com.ptoceti.influxdb.client.resources.WriteResource;
 import com.ptoceti.influxdb.converter.LineProtocol;
 import com.ptoceti.influxdb.factory.InfluxDbFactoryBuilder;
 import com.ptoceti.influxdb.factory.InfluxDbResourceFactory;
-import com.ptoceti.influxdb.factory.restlet.RestletInfluxDbResourceFactory;
 import com.ptoceti.influxdb.impl.NOAASerie.Noaa;
 import com.ptoceti.influxdb.ql.Privilege;
 import com.ptoceti.influxdb.ql.Query;
@@ -132,8 +132,6 @@ public class InfluxDbResourceFactoryTest {
 
 	    }
 
-	} catch (ResourceException ex) {
-	    Assert.fail("Error reading database: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error reading database: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -149,8 +147,6 @@ public class InfluxDbResourceFactoryTest {
 	
 	try {
 	    resource.post(query);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error creating database: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error creating database: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -171,8 +167,6 @@ public class InfluxDbResourceFactoryTest {
 
 	try {
 	    results = resource.post(query);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error creating retention policy 1: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error creating retention policy 1: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -188,8 +182,6 @@ public class InfluxDbResourceFactoryTest {
 
 	try {
 	    results = resource.post(query);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error creating retention policy 2: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error creating retention policy 2: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -208,8 +200,6 @@ public class InfluxDbResourceFactoryTest {
 
 	try {
 	    results = resource.post(query);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error creating retention policy 1: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error creating retention policy 1: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -221,8 +211,6 @@ public class InfluxDbResourceFactoryTest {
 	query = QueryBuilder.Query().ShowRetentionPolicies().On(TESTDATABASENAME).getQuery();
 	try {
 	    results = resource.post(query);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error getting list of retention policies: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error getting list of retention policies: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -255,8 +243,6 @@ public class InfluxDbResourceFactoryTest {
 
 	try {
 	    results = resource.post(query);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error creating test user1: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error creating test user1: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -268,8 +254,6 @@ public class InfluxDbResourceFactoryTest {
 	query = QueryBuilder.Query().Grant(Privilege.ALL.getName()).On(TESTDATABASENAME).To(TESTUSER1).getQuery();
 	try {
 	    results = resource.post(query);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error adding privileges to test user1: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error adding privileges to test user1: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -282,8 +266,6 @@ public class InfluxDbResourceFactoryTest {
 		.getQuery();
 	try {
 	    results = resource.post(query);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error creating admin user: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error creating admin user:: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -295,8 +277,6 @@ public class InfluxDbResourceFactoryTest {
 	query = QueryBuilder.Query().ShowUsers().getQuery();
 	try {
 	    results = resource.post(query);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error getting list of users: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error getting list of users " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -315,8 +295,6 @@ public class InfluxDbResourceFactoryTest {
 
 	try {
 	    results = resource.post(query);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error creating continuous query: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error creating continuous query: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -340,8 +318,6 @@ public class InfluxDbResourceFactoryTest {
 		.getQuery();
 	try {
 	    resource.post(query);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error droping privileges from test user1: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error droping privileges from test user1: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -353,8 +329,6 @@ public class InfluxDbResourceFactoryTest {
 	query = QueryBuilder.Query().DropUser(TESTUSER1).getQuery();
 	try {
 	    resource.post(query);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error deleting test user1: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error deleting test user1: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -367,8 +341,6 @@ public class InfluxDbResourceFactoryTest {
 
 	try {
 	    resource.post(query);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error deleting admin user: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error deleting admin user: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -388,8 +360,6 @@ public class InfluxDbResourceFactoryTest {
 
 	try {
 	    results = resource.post(query);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error droping retention policy 1: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error droping retention policy 1: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -403,8 +373,6 @@ public class InfluxDbResourceFactoryTest {
 
 	try {
 	    results = resource.post(query);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error droping retention policy 2: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error droping retention policy 2: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -418,8 +386,6 @@ public class InfluxDbResourceFactoryTest {
 
 	try {
 	    results = resource.post(query);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error droping retention policy 3: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error droping retention policy 3: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -441,8 +407,6 @@ public class InfluxDbResourceFactoryTest {
 
 	try {
 	    resource.post(query);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error Accessing resource: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error Accessing resource: " + ex.getError());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -457,6 +421,8 @@ public class InfluxDbResourceFactoryTest {
 
 	WriteResource resource = factory.getWriteResource(null, null, null, TESTRETENTIONPOLICY100WNAME);
 
+	Calendar now = Calendar.getInstance();
+
 	URL url = getClass().getClassLoader().getResource("NOAA_data.txt");
 	Path resPath;
 	try {
@@ -470,14 +436,24 @@ public class InfluxDbResourceFactoryTest {
 	    boolean isfirst = true;
 	    for (String pointLp : pointsLp) {
 
-		batch.addPoint(lineProtocol.toPoint(pointLp + "000"));
-		count++;
+	    	Point nextPoint = lineProtocol.toPoint(pointLp + "000");
+
+            long firstPointTimestamp = nextPoint.getTimestamp();
+            Date timestamp = new Date(firstPointTimestamp);
+
+            Calendar nextCalendar = Calendar.getInstance();
+            nextCalendar.setTime(timestamp);
+            nextCalendar.set(Calendar.YEAR, now.get(Calendar.YEAR) - 1);
+
+            nextPoint.setTimestamp(nextCalendar.getTimeInMillis());
+
 
 		if (isfirst) {
-		    long firstPointTimestamp = batch.getPoints().get(0).getTimestamp();
-		    Date timestamp = new Date(firstPointTimestamp);
-		    System.out.println(timestamp.toString());
+		    System.out.println(nextCalendar.getTime().toString());
 		}
+
+            batch.addPoint(nextPoint);
+            count++;
 
 		if (count > 99) {
 		    resource.write(batch);
@@ -501,8 +477,6 @@ public class InfluxDbResourceFactoryTest {
 	} catch (IOException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
-	} catch (ResourceException ex) {
-	    Assert.fail("Error injecting batch points: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error injecting batch points: " + ex.getError());
 	} catch (InfluxDbApiNotFoundException ex ){
@@ -527,8 +501,6 @@ public class InfluxDbResourceFactoryTest {
 
 	    Assert.assertEquals("Number of mesurements not as expected: ", 5, measurementSerie.size());
 
-	} catch (ResourceException ex) {
-	    Assert.fail("Error getting measurements: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error getting measurements: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -551,8 +523,7 @@ public class InfluxDbResourceFactoryTest {
 	    
 	    int nbSerie = serie.size();
 	    Assert.assertEquals("nb series not as expected: ", true, nbSerie > 0);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error getting series: " + ex);
+
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error getting series: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -575,8 +546,7 @@ public class InfluxDbResourceFactoryTest {
 	    
 	    int nbSerie = serie.size();
 	    Assert.assertEquals("nb tag keys not as expected: ", true, nbSerie > 0);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error getting tag keys: " + ex);
+
 	} catch (InfluxDbApiNotFoundException ex) {
 	    Assert.fail("Error getting tag keys: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiBadrequestException ex) {
@@ -598,8 +568,7 @@ public class InfluxDbResourceFactoryTest {
 	    
 	    int nbSerie = serie.size();
 	    Assert.assertEquals("nb field keys not as expected: ", true, nbSerie > 0);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error getting field keys: " + ex);
+
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error getting field keys: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -621,9 +590,7 @@ public class InfluxDbResourceFactoryTest {
 	    
 	    int nbSerie = serie.size();
 	    Assert.assertEquals("nb values not as expected: ", true, nbSerie > 0);
-	    
-	} catch (ResourceException ex) {
-	    Assert.fail("Error getting tag values: " + ex);
+
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error getting tag values: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -642,8 +609,6 @@ public class InfluxDbResourceFactoryTest {
 		    .addField("testfield2", 1).getPoint();
 	try {
 	    resource.write(point);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error injecting  points: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error injecting  points: " + ex.getError());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -664,8 +629,6 @@ public class InfluxDbResourceFactoryTest {
 		    .addTag("testTag", "tag1").addField("testfield", 3).addField("testfield2", 3).add().getBatch();
 	try {
 	    resource.write(batch);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error injecting  batch:: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error injecting  batch: " + ex.getError());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -686,8 +649,6 @@ public class InfluxDbResourceFactoryTest {
 	try {
 	    queryResults = resource.get();
 	    checkResults(queryResults, "testmeasurement", 4, 2, 4);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error Accessing resource: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error Accessing resource: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -703,8 +664,6 @@ public class InfluxDbResourceFactoryTest {
 	    queryResults = resource.get();
 	    // groupby testTag, this one not resulting columns
 	    checkResults(queryResults, "testmeasurement", 3, 2, 3);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error Accessing resource: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error Accessing resource: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -727,8 +686,6 @@ public class InfluxDbResourceFactoryTest {
 	try {
 	    queryResults = resource.get();
 	    checkResults(queryResults, "testmeasurement", 3, 2, 3);
-	} catch (ResourceException ex) {
-	    Assert.fail("Error Accessing resource: " + ex);
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error Accessing resource: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
@@ -761,9 +718,7 @@ public class InfluxDbResourceFactoryTest {
 	    }
 	    
 	    Assert.assertTrue("NOAA select <= 0", serie.size() > 0);
-	    
-	} catch (ResourceException ex) {
-	    Assert.fail("Error Accessing resource: " + ex);
+
 	} catch (InfluxDbApiBadrequestException ex) {
 	    Assert.fail("Error Accessing resource: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbApiNotFoundException ex) {
