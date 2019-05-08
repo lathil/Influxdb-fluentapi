@@ -24,6 +24,7 @@ package com.ptoceti.influxdb.factory;
 import com.ptoceti.influxdb.Consistency;
 import com.ptoceti.influxdb.Epoch;
 import com.ptoceti.influxdb.Precision;
+import com.ptoceti.influxdb.client.exception.InfluxDbResourceException;
 import com.ptoceti.influxdb.client.resources.PingResource;
 import com.ptoceti.influxdb.client.resources.QueryResource;
 import com.ptoceti.influxdb.client.resources.WriteResource;
@@ -65,7 +66,7 @@ public interface InfluxDbResourceFactory {
      *            Sets the target retention policy for the write
      * @return the configured resource
      */
-    WriteResource getWriteResource(Consistency consistency, String database, Precision precision, String retentionPolicy);
+    WriteResource getWriteResource(Consistency consistency, String database, Precision precision, String retentionPolicy) throws InfluxDbResourceException;
     
     /**
      * Configure a resource to write a point in the configured database
@@ -76,7 +77,7 @@ public interface InfluxDbResourceFactory {
      * 
      * @return the configured resource
      */
-    WriteResource getWriteResource();
+    WriteResource getWriteResource() throws InfluxDbResourceException;
     
     /**
      * Prepare a resource for sending queries through POST method to the
@@ -90,7 +91,7 @@ public interface InfluxDbResourceFactory {
      * 
      * @return the prepared query.
      */
-    QueryResource getQueryResource();
+    QueryResource getQueryResource() throws InfluxDbResourceException;
     
     /**
      * Prepare a query to be sent by GET method to the influxdb server The query
@@ -106,7 +107,7 @@ public interface InfluxDbResourceFactory {
      *            the SELECT or SHOW query
      * @return the prepared query.
      */
-    QueryResource getQueryResource(Query query);
+    QueryResource getQueryResource(Query query) throws InfluxDbResourceException;
     
     /**
      * Prepare a query to be sent by GET method to the influxdb server The query
@@ -128,14 +129,14 @@ public interface InfluxDbResourceFactory {
      *            influx use the database default policy
      * @return the prepared query.
      */
-    QueryResource getQueryResource(Query query, Epoch epoch, String retentionPolicy);
+    QueryResource getQueryResource(Query query, Epoch epoch, String retentionPolicy) throws InfluxDbResourceException;
     
     /**
      * Create a query resource to ping targeted influxdb server.
      * 
      * @return the ping resource.
      */
-    PingResource getPingResource();
+    PingResource getPingResource() throws InfluxDbResourceException;
     
     
     /**

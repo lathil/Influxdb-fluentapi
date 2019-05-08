@@ -23,6 +23,7 @@ package com.ptoceti.influxdb.client.resources;
 
 import com.ptoceti.influxdb.client.exception.InfluxDbApiBadrequestException;
 import com.ptoceti.influxdb.client.exception.InfluxDbApiNotFoundException;
+import com.ptoceti.influxdb.client.exception.InfluxDbTransportException;
 
 /**
  * A resource to ping a Influxdb server and test the connection
@@ -42,7 +43,7 @@ public interface PingResource {
      * @throws InfluxDbApiNotFoundException resource or database not found
      * @throws InfluxDbApiBadrequestException request unacceptable, not understood.
      */
-    boolean ping() throws InfluxDbApiNotFoundException, InfluxDbApiBadrequestException;
+    boolean ping() throws InfluxDbApiNotFoundException, InfluxDbApiBadrequestException, InfluxDbTransportException;
     
     /**
      * Free linked resources

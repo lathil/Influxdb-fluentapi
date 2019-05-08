@@ -35,6 +35,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.spi.CalendarDataProvider;
 
+import com.ptoceti.influxdb.client.exception.InfluxDbResourceException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
@@ -96,11 +97,11 @@ public class InfluxDbResourceFactoryTest {
     
     @Test
     public void test1001pingDatabaseTest(){
-	
-	PingResource pResource = factory.getPingResource();
+
 	try {
+		PingResource pResource = factory.getPingResource();
 	    pResource.ping();
-	} catch (InfluxDbApiNotFoundException | InfluxDbApiBadrequestException e) {
+	} catch (InfluxDbApiNotFoundException | InfluxDbApiBadrequestException | InfluxDbResourceException | InfluxDbTransportException e) {
 	    Assert.fail("Error pinging database" );
 	}
 	
@@ -115,7 +116,13 @@ public class InfluxDbResourceFactoryTest {
 
 	// first get list of already exixting databases in the server
 	Query query = QueryBuilder.Query().ShowDataBases().getQuery();
-	QueryResource resource = factory.getQueryResource(query);
+        QueryResource resource = null;
+	try {
+        resource = factory.getQueryResource(query);
+    } catch (InfluxDbResourceException ex){
+	    Assert.fail("Error creating resource" + ex.getMessage());
+    }
+
 	QueryResults queryresults = null;
 
 	try {
@@ -138,9 +145,14 @@ public class InfluxDbResourceFactoryTest {
 	    Assert.fail("Error reading database: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbTransportException ex) {
 	    Assert.fail("Error reading database: " + ex.getMessage() + " for query: " + query.toQL());
-	} 
+	}
 
+	try {
 	resource = factory.getQueryResource();
+    } catch (InfluxDbResourceException ex){
+        Assert.fail("Error creating resource" + ex.getMessage());
+    }
+
 	query = QueryBuilder.Query().CreateDataBase(TESTDATABASENAME).With().Duration("1w").Replication("1")
 		.Name(TESTRETENTIONPOLICY1WNAME).getQuery();
 
@@ -153,14 +165,20 @@ public class InfluxDbResourceFactoryTest {
 	    Assert.fail("Error creating database: " + ex.getError() + " for query: " + query.toQL());
 	} catch (InfluxDbTransportException ex) {
 	    Assert.fail("Error creating database: " + ex.getMessage() + " for query: " + query.toQL());
-	} 
+	}
 
     }
 
     @Test
     public void test1003CreateRetentionPolicy() {
 
-	QueryResource resource = factory.getQueryResource();
+        QueryResource resource = null;
+        try {
+	        resource = factory.getQueryResource();
+        } catch (InfluxDbResourceException ex){
+            Assert.fail("Error creating resource" + ex.getMessage());
+        }
+
 	Query query = QueryBuilder.Query().CreateRetentionPolicy(TESTRETENTIONPOLICY100WNAME).On(TESTDATABASENAME)
 		.Duration("100w").Replication("1").Default().getQuery();
 	QueryResults results = null;
@@ -174,8 +192,13 @@ public class InfluxDbResourceFactoryTest {
 	} catch (InfluxDbTransportException ex) {
 	    Assert.fail("Error creating retention policy 1: " + ex.getMessage() + " for query: " + query.toQL());
 	} 
-	
-	resource = factory.getQueryResource();
+
+	try {
+	    resource = factory.getQueryResource();
+    } catch (InfluxDbResourceException ex){
+        Assert.fail("Error creating resource" + ex.getMessage());
+    }
+
 	query = QueryBuilder.Query().CreateRetentionPolicy(TESTRETENTIONPOLICY200WNAME).On(TESTDATABASENAME)
 		.Duration("200w").Replication("1").Default().getQuery();
 	results = null;
@@ -193,7 +216,13 @@ public class InfluxDbResourceFactoryTest {
 
     @Test
     public void test1004ModifyRetentionPolicy() {
-	QueryResource resource = factory.getQueryResource();
+	QueryResource resource = null;
+	try {
+	    resource = factory.getQueryResource();
+    } catch (InfluxDbResourceException ex){
+        Assert.fail("Error creating resource" + ex.getMessage());
+    }
+
 	Query query = QueryBuilder.Query().AlterRetentionPolicy(TESTRETENTIONPOLICY1WNAME).On(TESTDATABASENAME)
 		.Duration("10w").Replication("1").getQuery();
 	QueryResults results = null;
@@ -237,7 +266,13 @@ public class InfluxDbResourceFactoryTest {
     @Test
     public void test1005CreateUser() {
 
-	QueryResource resource = factory.getQueryResource();
+        QueryResource resource = null;
+        try{
+	        resource = factory.getQueryResource();
+        } catch (InfluxDbResourceException ex){
+            Assert.fail("Error creating resource" + ex.getMessage());
+        }
+
 	Query query = QueryBuilder.Query().CreateUser(TESTUSER1).WithPassword(TESTUSER1PASSWORD).getQuery();
 	QueryResults results = null;
 
@@ -288,7 +323,13 @@ public class InfluxDbResourceFactoryTest {
 
     @Test
     public void test1006CreateContinuousQuery(){
-	QueryResource resource = factory.getQueryResource();
+	QueryResource resource = null;
+	try{
+	    resource = factory.getQueryResource();
+    } catch (InfluxDbResourceException ex){
+        Assert.fail("Error creating resource" + ex.getMessage());
+    }
+
 	Query query = QueryBuilder.Query().CreateContinuousQuery("OneHour_WaterLevel").On(TESTDATABASENAME).Begin(
 		QueryBuilder.Query().Select("mean(\"water_level\")").Into(TESTRETENTIONPOLICY200WNAME + ".h2o_feet_200").From(TESTRETENTIONPOLICY100WNAME + ".h2o_feet").GroupBy("time(1h)").getQuery()).End().getQuery();
 	QueryResults results = null;
@@ -312,7 +353,12 @@ public class InfluxDbResourceFactoryTest {
     @Test
     public void test3000DeleteUser() {
 
-	QueryResource resource = factory.getQueryResource();
+	QueryResource resource = null;
+	try {
+	    resource = factory.getQueryResource();
+    } catch (InfluxDbResourceException ex){
+        Assert.fail("Error creating resource" + ex.getMessage());
+    }
 
 	Query query = QueryBuilder.Query().Revoke(Privilege.ALL.getName()).On(TESTDATABASENAME).From(TESTUSER1)
 		.getQuery();
@@ -353,7 +399,13 @@ public class InfluxDbResourceFactoryTest {
 
     @Test
     public void test3001DropRetentionPolicy() {
-	QueryResource resource = factory.getQueryResource();
+	QueryResource resource = null;
+	try {
+	    resource = factory.getQueryResource();
+    } catch (InfluxDbResourceException ex){
+        Assert.fail("Error creating resource" + ex.getMessage());
+    }
+
 	Query query = QueryBuilder.Query().DropRetentionPolicy(TESTRETENTIONPOLICY100WNAME).On(TESTDATABASENAME)
 		.getQuery();
 	QueryResults results = null;
@@ -367,8 +419,13 @@ public class InfluxDbResourceFactoryTest {
 	} catch (InfluxDbTransportException ex) {
 	    Assert.fail("Error droping retention policy 1: " + ex.getMessage() + " for query: " + query.toQL());
 	} 
-	
-	resource = factory.getQueryResource();
+
+	try {
+	    resource = factory.getQueryResource();
+    } catch (InfluxDbResourceException ex){
+        Assert.fail("Error creating resource" + ex.getMessage());
+    }
+
 	query = QueryBuilder.Query().DropRetentionPolicy(TESTRETENTIONPOLICY200WNAME).On(TESTDATABASENAME).getQuery();
 
 	try {
@@ -381,7 +438,12 @@ public class InfluxDbResourceFactoryTest {
 	    Assert.fail("Error droping retention policy 2: " + ex.getMessage() + " for query: " + query.toQL());
 	} 
 
-	resource = factory.getQueryResource();
+	try {
+	    resource = factory.getQueryResource();
+    } catch (InfluxDbResourceException ex){
+        Assert.fail("Error creating resource" + ex.getMessage());
+    }
+
 	query = QueryBuilder.Query().DropRetentionPolicy(TESTRETENTIONPOLICY1WNAME).On(TESTDATABASENAME).getQuery();
 
 	try {
@@ -402,7 +464,13 @@ public class InfluxDbResourceFactoryTest {
     @Test
     public void test3002deleteTestDataBase() {
 
-	QueryResource resource = factory.getQueryResource();
+	QueryResource resource = null;
+	try {
+	    resource = factory.getQueryResource();
+    } catch (InfluxDbResourceException ex){
+        Assert.fail("Error creating resource" + ex.getMessage());
+    }
+
 	Query query = QueryBuilder.Query().DropDataBase(TESTDATABASENAME).getQuery();
 
 	try {
@@ -419,7 +487,12 @@ public class InfluxDbResourceFactoryTest {
     @Test
     public void test2000injectNOAATestDatabase() {
 
-	WriteResource resource = factory.getWriteResource(null, null, null, TESTRETENTIONPOLICY100WNAME);
+	WriteResource resource = null;
+	try {
+	    resource = factory.getWriteResource(null, null, null, TESTRETENTIONPOLICY100WNAME);
+    } catch (InfluxDbResourceException ex){
+        Assert.fail("Error creating resource" + ex.getMessage());
+    }
 
 	Calendar now = Calendar.getInstance();
 
@@ -490,7 +563,13 @@ public class InfluxDbResourceFactoryTest {
     @Test
     public void test2001ShowMeasurements() {
 	Query query = QueryBuilder.Query().ShowMeasurement().getQuery();
-	QueryResource resource = factory.getQueryResource(query);
+	QueryResource resource = null;
+	try {
+	    resource = factory.getQueryResource(query);
+    } catch (InfluxDbResourceException ex){
+        Assert.fail("Error creating resource" + ex.getMessage());
+    }
+
 	QueryResults queryResults = null;
 
 	try {
@@ -514,8 +593,13 @@ public class InfluxDbResourceFactoryTest {
     public void test2002ShowSeries(){
 	
 	Query query = QueryBuilder.Query().ShowSeries().From("h2o_feet").getQuery();
-	QueryResource resource = factory.getQueryResource(query);
-	
+	QueryResource resource = null;
+	try {
+	    resource =factory.getQueryResource(query);
+    } catch (InfluxDbResourceException ex){
+        Assert.fail("Error creating resource" + ex.getMessage());
+    }
+
 	try {
 	    QueryResults queryResults = resource.get();
 
@@ -537,7 +621,12 @@ public class InfluxDbResourceFactoryTest {
     public void test2003ShowTagKeys(){
 	
 	Query query = QueryBuilder.Query().ShowTagKeys().From("h2o_feet").getQuery();
-	QueryResource resource = factory.getQueryResource(query);
+	QueryResource resource = null;
+	try {
+	    resource = factory.getQueryResource(query);
+    } catch (InfluxDbResourceException ex){
+        Assert.fail("Error creating resource" + ex.getMessage());
+    }
 	
 	try {
 	    QueryResults queryResults = resource.get();
@@ -559,7 +648,12 @@ public class InfluxDbResourceFactoryTest {
     @Test
     public void test2004ShowFieldsKeys(){
 	Query query = QueryBuilder.Query().ShowFieldKeys().From("h2o_feet").getQuery();
-	QueryResource resource = factory.getQueryResource(query);
+	QueryResource resource = null;
+	try {
+	    resource =factory.getQueryResource(query);
+    } catch (InfluxDbResourceException ex){
+        Assert.fail("Error creating resource" + ex.getMessage());
+    }
 	
 	try {
 	    QueryResults queryResults = resource.get();
@@ -581,8 +675,13 @@ public class InfluxDbResourceFactoryTest {
     @Test
     public void test2005ShowTagValues(){
 	Query query = QueryBuilder.Query().ShowTagsValue().From("h2o_feet").WithKey(" = location").getQuery();
-	QueryResource resource = factory.getQueryResource(query);
-	
+	QueryResource resource = null;
+	try {
+	    resource = factory.getQueryResource(query);
+    } catch (InfluxDbResourceException ex){
+        Assert.fail("Error creating resource" + ex.getMessage());
+    }
+
 	try {
 	    QueryResults queryResults = resource.get();
 
@@ -603,7 +702,12 @@ public class InfluxDbResourceFactoryTest {
     @Test
     public void test2005WritePointDataBase() {
 
-	WriteResource resource = factory.getWriteResource();
+	WriteResource resource = null;
+	try {
+	    resource = factory.getWriteResource();
+    } catch (InfluxDbResourceException ex){
+        Assert.fail("Error creating resource" + ex.getMessage());
+    }
 
 	Point point = PointBuilder.Point("testmeasurement").addTag("testTag", "tag1").addField("testfield", 1)
 		    .addField("testfield2", 1).getPoint();
@@ -622,7 +726,12 @@ public class InfluxDbResourceFactoryTest {
     @Test
     public void test2006WriteBatchDataBase() {
 
-	WriteResource resource = factory.getWriteResource();
+	WriteResource resource = null;
+	try {
+	    resource = factory.getWriteResource();
+    } catch (InfluxDbResourceException ex){
+        Assert.fail("Error creating resource" + ex.getMessage());
+    }
 
 	Batch batch = BatchBuilder.Batch().point("testmeasurement").addTag("testTag", "tag1")
 		    .addField("testfield", 2).addField("testfield2", 2).add().point("testmeasurement")
@@ -643,7 +752,13 @@ public class InfluxDbResourceFactoryTest {
     public void test2007QuerySelectDataBase() {
 
 	Query query = QueryBuilder.Query().Select("*").From("testmeasurement").Where("testTag = 'tag1'").getQuery();
-	QueryResource resource = factory.getQueryResource(query);
+	QueryResource resource = null;
+	try {
+	    resource = factory.getQueryResource(query);
+    } catch (InfluxDbResourceException ex){
+        Assert.fail("Error creating resource" + ex.getMessage());
+    }
+
 	QueryResults queryResults = null;
 
 	try {
@@ -659,7 +774,12 @@ public class InfluxDbResourceFactoryTest {
 
 	query = QueryBuilder.Query().Select("*").From("testmeasurement").Where("testTag = 'tag1'").GroupBy("testTag")
 		.getQuery();
-	resource = factory.getQueryResource(query);
+
+	try {
+	    resource = factory.getQueryResource(query);
+    } catch (InfluxDbResourceException ex){
+        Assert.fail("Error creating resource" + ex.getMessage());
+    }
 	try {
 	    queryResults = resource.get();
 	    // groupby testTag, this one not resulting columns
@@ -679,7 +799,12 @@ public class InfluxDbResourceFactoryTest {
 
 	Query query = QueryBuilder.Query().Select("testfield", "testfield2").From("testmeasurement")
 		.Where("testTag = 'tag1'").getQuery();
-	QueryResource resource = factory.getQueryResource(query);
+	QueryResource resource = null;
+	try {
+	    resource = factory.getQueryResource(query);
+    } catch (InfluxDbResourceException ex){
+        Assert.fail("Error creating resource" + ex.getMessage());
+    }
 
 	QueryResults queryResults = null;
 
@@ -705,7 +830,12 @@ public class InfluxDbResourceFactoryTest {
 	// select all records from 2025 August
 	Query query = QueryBuilder.Query().Select("*").From("test." + TESTRETENTIONPOLICY100WNAME + ".h2o_feet")
 		.Where("location = 'coyote_creek' AND time > " + from + "ms AND time < " + to + "ms").getQuery();
-	QueryResource resource = factory.getQueryResource(query);
+	QueryResource resource = null;
+	try {
+	    resource = factory.getQueryResource(query);
+    } catch (InfluxDbResourceException ex){
+        Assert.fail("Error creating resource" + ex.getMessage());
+    }
 
 	QueryResults queryResults = null;
 

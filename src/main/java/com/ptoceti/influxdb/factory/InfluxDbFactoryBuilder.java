@@ -23,8 +23,6 @@ package com.ptoceti.influxdb.factory;
 
 import java.net.URL;
 
-import com.ptoceti.influxdb.factory.jersey.JerseyInfluxDbResourceFactory;
-
 /**
  * A builder to configure a RestletInfluxDbResourceFactory in a fluent api manner.
  * 
@@ -52,7 +50,7 @@ public class InfluxDbFactoryBuilder {
      * @return a factory builder
      */
     public static InfluxDbFactoryBuilder build(URL target) {
-	JerseyInfluxDbResourceFactory newFactory = new JerseyInfluxDbResourceFactory(target);
+	ResourceFactory newFactory = new ResourceFactory(target);
 	return new InfluxDbFactoryBuilder(newFactory);
     }
 
