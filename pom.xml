@@ -35,7 +35,7 @@
 		<pom.organization.url>www.ptoceti.com</pom.organization.url>
 		<bundle.namespace>com.ptoceti.influxdb</bundle.namespace>
 		<restlet.version>2.3.0</restlet.version>
-		<version.junit>4.11</version.junit>
+		<version.junit>4.13.1</version.junit>
 	</properties>
 
 	<scm>
